@@ -1,4 +1,3 @@
-use crate::{url, util};
 use serde::Deserialize;
 
 #[derive(Deserialize)]
@@ -15,21 +14,6 @@ pub struct ReturnData {
 
 #[derive(Deserialize)]
 pub struct APIData {
-	pub message: Option<String>,
-	pub name: Option<String>,
-	pub description: Option<String>,
-	pub internal_type: Option<String>,
-	pub parent: Option<String>,
-	pub props: Option<Vec<String>>,
-	pub methods: Option<Vec<String>>,
-	pub events: Option<Vec<String>>,
-	pub r#type: Option<String>,
-	pub params: Option<Vec<ParameterData>>,
-	pub returns: Option<ReturnData>,
-}
-
-pub struct ParsedData {
-	pub url: String,
 	pub name: String,
 	pub description: String,
 	pub internal_type: String,
@@ -42,22 +26,21 @@ pub struct ParsedData {
 	pub returns: Option<ReturnData>,
 }
 
-pub fn parse(data: APIData, source: &str) -> ParsedData {
-	if let Some(message) = data.message {
-		util::exit(message);
-	}
+#[derive(Deserialize)]
+pub struct APIError {
+	pub message: String,
+}
 
-	ParsedData {
-		url: url::create(&data, source),
-		name: data.name.unwrap(),
-		description: data.description.unwrap(),
-		internal_type: data.internal_type.unwrap(),
-		parent: data.parent,
-		props: data.props,
-		methods: data.methods,
-		events: data.events,
-		r#type: data.r#type,
-		params: data.params,
-		returns: data.returns,
+#[derive(Deserialize)]
+#[serde(untagged)]
+pub enum APIResponse {
+	Data(APIData),
+	Error(APIError),
+}
+
+pub fn parse(data: APIResponse) -> APIData {
+	match data {
+		APIResponse::Data(data) => data,
+		APIResponse::Error(error) => cli::exit(error.message),
 	}
 }

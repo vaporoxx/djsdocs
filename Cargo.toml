@@ -9,5 +9,14 @@ license = "ISC"
 
 [dependencies]
 regex = "1"
-reqwest = { version = "0", features = ["blocking", "json"] }
-serde = { version = "1", features = ["derive"] }
+
+[dependencies.cli]
+git = "https://github.com/vaporox/cli"
+
+[dependencies.reqwest]
+version = "0"
+features = ["blocking", "json"]
+
+[dependencies.serde]
+version = "1"
+features = ["derive"]

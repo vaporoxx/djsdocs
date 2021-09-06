@@ -1,10 +1,10 @@
-use crate::data::ParsedData;
+use crate::data::APIData;
 use crate::util;
 
-pub fn print(data: ParsedData, compact: bool) {
+pub fn print(data: APIData, url: &str, compact: bool) {
 	let parent = match data.parent {
 		Some(value) => value + ".",
-		None => "".to_owned(),
+		None => String::new(),
 	};
 
 	println!("\n{}{} ({})", parent, data.name, data.internal_type);
@@ -39,7 +39,7 @@ pub fn print(data: ParsedData, compact: bool) {
 		println!("\nReturns:\n{}", returns.r#type);
 	}
 
-	println!("\n -> View full docs: [{}]\n", data.url);
+	println!("\n -> View full docs: [{}]\n", url);
 }
 
 pub fn print_list(mut list: Vec<String>, name: &str, sort: bool, compact: bool) {

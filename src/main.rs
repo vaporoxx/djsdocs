@@ -15,7 +15,7 @@ fn main() {
 	}
 
 	let source = args.options.get("src").map_or("stable", |e| e);
-	let force = args.options.contains_key("force");
+	let force = args.options.contains_key("force") || args.flags.contains(&'f');
 
 	let url = format!(
 		"https://djsdocs.sorta.moe/v2?src={}&force={}&q={}",
@@ -29,7 +29,7 @@ fn main() {
 
 	let data = data::parse(parsed);
 	let url = url::create(&data, source);
-	let compact = args.options.contains_key("compact");
+	let compact = args.options.contains_key("compact") || args.flags.contains(&'c');
 
 	output::print(data, &url, compact);
 }

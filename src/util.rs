@@ -1,12 +1,19 @@
 use regex::Regex;
+use std::borrow::Cow;
+use std::fmt::Display;
+use std::process;
 
-pub fn clean(input: &str) -> String {
-	let regexes = [
-		Regex::new(r"`([^`]*)`").unwrap(),
-		Regex::new(r"\{@link ([^}]*)\}").unwrap(),
-	];
+pub fn clean_description(input: &str) -> Cow<str> {
+	Regex::new(r"`([^`]*)`|\{@link ([^}]*)\}")
+		.unwrap()
+		.replace_all(input, "$1$2")
+}
 
-	regexes
-		.iter()
-		.fold(input.into(), |acc, regex| regex.replace_all(&acc, "$1").into_owned())
+pub fn exit(message: impl Display) -> ! {
+	eprintln!("Error: {}", message);
+	process::exit(1);
+}
+
+pub fn unwrap<T>(result: Result<T, impl Display>) -> T {
+	result.unwrap_or_else(|err| exit(err))
 }

@@ -1,14 +1,11 @@
 use crate::data::APIData;
 use crate::util;
 
-pub fn print(data: APIData, url: &str, compact: bool) {
-	let parent = match data.parent {
-		Some(value) => value + ".",
-		None => String::new(),
-	};
+pub fn print_output(data: APIData, url: &str, compact: bool) {
+	let parent = data.parent.map_or(String::new(), |x| x + ".");
 
 	println!("\n{}{} ({})", parent, data.name, data.internal_type);
-	println!("\n{}", util::clean(&data.description));
+	println!("\n{}", util::clean_description(&data.description));
 
 	if let Some(props) = data.props {
 		print_list(props, "Properties", true, compact);
@@ -42,7 +39,7 @@ pub fn print(data: APIData, url: &str, compact: bool) {
 	println!("\n -> View full docs: [{}]\n", url);
 }
 
-pub fn print_list(mut list: Vec<String>, name: &str, sort: bool, compact: bool) {
+fn print_list(mut list: Vec<String>, name: &str, sort: bool, compact: bool) {
 	list = list.into_iter().filter(|e| !e.starts_with('_')).collect();
 
 	if sort {

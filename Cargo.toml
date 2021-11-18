@@ -2,16 +2,13 @@
 name = "djsdocs"
 version = "0.1.0"
 authors = ["Vaporox"]
-edition = "2018"
+edition = "2021"
 description = "Access discord.js docs from a terminal"
 repository = "https://github.com/vaporox/djsdocs"
 license = "ISC"
 
 [dependencies]
 regex = "1"
-
-[dependencies.cli]
-git = "https://github.com/vaporox/cli"
 
 [dependencies.reqwest]
 version = "0"

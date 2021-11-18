@@ -1,17 +1,17 @@
+mod args;
 mod data;
 mod output;
 mod url;
 mod util;
 
-use cli::Args;
 use data::APIResponse;
 use reqwest::blocking as reqwest;
 
 fn main() {
-	let args = Args::parse();
+	let args = args::parse_args();
 
 	if args.positionals.is_empty() {
-		cli::exit("no query provided")
+		util::exit("no query provided")
 	}
 
 	let source = args.options.get("src").map_or("stable", |e| e);
@@ -24,12 +24,12 @@ fn main() {
 		args.positionals.join(".").replace('#', "."),
 	);
 
-	let response = cli::unwrap(reqwest::get(url));
-	let parsed = cli::unwrap(response.json::<APIResponse>());
+	let response = util::unwrap(reqwest::get(url));
+	let parsed = util::unwrap(response.json::<APIResponse>());
 
-	let data = data::parse(parsed);
-	let url = url::create(&data, source);
+	let data = util::unwrap(parsed.try_into());
+	let url = util::unwrap(url::parse_url(&data, source));
 	let compact = args.options.contains_key("compact") || args.flags.contains(&'c');
 
-	output::print(data, &url, compact);
+	output::print_output(data, &url, compact);
 }

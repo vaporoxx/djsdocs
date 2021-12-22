@@ -10,7 +10,7 @@ pub fn clean_description(input: &str) -> Cow<str> {
 }
 
 pub fn exit(message: impl Display) -> ! {
-	eprintln!("Error: {}", message);
+	eprintln!("{}: {}", env!("CARGO_PKG_NAME"), message);
 	process::exit(1);
 }
 

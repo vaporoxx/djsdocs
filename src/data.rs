@@ -1,5 +1,4 @@
 use serde::Deserialize;
-use std::fmt::Display;
 
 #[derive(Deserialize)]
 pub struct ParameterData {
@@ -32,12 +31,6 @@ pub struct APIError {
 	pub message: String,
 }
 
-impl Display for APIError {
-	fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-		self.message.fmt(f)
-	}
-}
-
 #[derive(Deserialize)]
 #[serde(untagged)]
 pub enum APIResponse {
@@ -46,12 +39,12 @@ pub enum APIResponse {
 }
 
 impl TryFrom<APIResponse> for APIData {
-	type Error = APIError;
+	type Error = String;
 
 	fn try_from(data: APIResponse) -> Result<Self, Self::Error> {
 		match data {
 			APIResponse::Data(data) => Ok(data),
-			APIResponse::Error(error) => Err(error),
+			APIResponse::Error(error) => Err(error.message),
 		}
 	}
 }

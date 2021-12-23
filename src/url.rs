@@ -1,4 +1,4 @@
-use crate::data::APIData;
+use crate::data::ElementData;
 use std::fmt::Display;
 
 pub enum URLError {
@@ -29,7 +29,7 @@ fn base_url(source: &str) -> Option<&'static str> {
 	}
 }
 
-pub fn parse_url(data: &APIData, source: &str) -> Result<String, URLError> {
+pub fn parse_url(data: &ElementData, source: &str) -> Result<String, URLError> {
 	let base = base_url(source).ok_or(URLError::UnknownSource)?;
 
 	let parent = data.parent.as_ref();

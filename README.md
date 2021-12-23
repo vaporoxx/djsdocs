@@ -10,12 +10,12 @@ This is a command line utility to access the discord.js documentation.
 ## Usage
 
 ```
-djsdocs <query> [--compact | -c] [--force | -f] [--src=source]
+djsdocs [query] [--compact | -c] [--force | -f] [--src=source]
 ```
 
-| Parameter | Flag | Default  | Description                           |
-|:---------:|:----:|:--------:|---------------------------------------|
-| query     | /    | /        | The search query, e.g. `User`         |
-| compact   | c    | off      | Whether to put lists on a single line |
-| force     | f    | off      | Whether to ignore the cache           |
-| src       | /    | `stable` | The source of the docs, e.g. `master` |
+| Parameter | Flag | Default  | Description                                                      |
+|:---------:|:----:|:--------:|------------------------------------------------------------------|
+| query     | /    | /        | The search query, e.g. `User`. If empty, all elements get listed |
+| compact   | c    | off      | Whether to put lists on a single line                            |
+| force     | f    | off      | Whether to ignore the cache                                      |
+| src       | /    | `stable` | The source of the docs, e.g. `master`                            |

@@ -13,7 +13,7 @@ pub struct ReturnData {
 }
 
 #[derive(Deserialize)]
-pub struct APIData {
+pub struct ElementData {
 	pub name: String,
 	pub description: String,
 	pub internal_type: String,
@@ -27,6 +27,18 @@ pub struct APIData {
 }
 
 #[derive(Deserialize)]
+pub struct ListElementData {
+	pub name: String,
+}
+
+#[derive(Deserialize)]
+pub struct ListData {
+	pub classes: Vec<ListElementData>,
+	pub interfaces: Vec<ListElementData>,
+	pub typedefs: Vec<ListElementData>,
+}
+
+#[derive(Deserialize)]
 pub struct APIError {
 	pub message: String,
 }
@@ -34,17 +46,7 @@ pub struct APIError {
 #[derive(Deserialize)]
 #[serde(untagged)]
 pub enum APIResponse {
-	Data(APIData),
+	Element(ElementData),
+	List(ListData),
 	Error(APIError),
-}
-
-impl TryFrom<APIResponse> for APIData {
-	type Error = String;
-
-	fn try_from(data: APIResponse) -> Result<Self, Self::Error> {
-		match data {
-			APIResponse::Data(data) => Ok(data),
-			APIResponse::Error(error) => Err(error.message),
-		}
-	}
 }

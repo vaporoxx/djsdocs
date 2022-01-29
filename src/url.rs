@@ -19,12 +19,15 @@ impl Display for URLError {
 
 fn base_url(source: &str) -> Option<&'static str> {
 	match source {
-		"stable" => Some("https://discord.js.org/#/docs/main/stable"),
-		"master" => Some("https://discord.js.org/#/docs/main/main"),
+		"stable" => Some("https://discord.js.org/#/docs/discord.js/stable"),
+		"main" => Some("https://discord.js.org/#/docs/discord.js/main"),
 		"collection" => Some("https://discord.js.org/#/docs/collection/main"),
-		"rpc" => Some("https://discord.js.org/#/docs/rpc/master"),
+		"builders" => Some("https://discord.js.org/#/docs/builders/main"),
+		"voice" => Some("https://discord.js.org/#/docs/voice/main"),
+		"rest" => Some("https://discord.js.org/#/docs/rest/main"),
 		"commando" => Some("https://discord.js.org/#/docs/commando/master"),
-		"akairo-master" => Some("https://discord-akairo.github.io/#/docs/main/master"),
+		"rpc" => Some("https://discord.js.org/#/docs/rpc/master"),
+		"akairo" => Some("https://discord-akairo.github.io/#/docs/main/master"),
 		_ => None,
 	}
 }

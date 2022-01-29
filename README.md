@@ -18,4 +18,4 @@ djsdocs [query] [--compact | -c] [--force | -f] [--src=source]
 | query     | /    | /        | The search query, e.g. `User`. If empty, all elements get listed |
 | compact   | c    | off      | Whether to put lists on a single line                            |
 | force     | f    | off      | Whether to ignore the cache                                      |
-| src       | /    | `stable` | The source of the docs, e.g. `master`                            |
+| src       | /    | `stable` | The source of the docs, e.g. `main`                              |

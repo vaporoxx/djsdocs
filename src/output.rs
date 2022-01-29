@@ -5,18 +5,21 @@ pub fn print_element(data: ElementData, url: &str, compact: bool) {
 	let parent = data.parent.map_or(String::new(), |x| x + ".");
 
 	println!("\n{}{} ({})", parent, data.name, data.internal_type);
-	println!("\n{}", util::clean_description(&data.description));
+
+	if let Some(description) = data.description {
+		println!("\n{}", util::clean_description(&description));
+	}
 
 	if let Some(props) = data.props {
-		print_vec(props, "Properties", true, compact);
+		print_iter(props, "Properties", true, compact);
 	}
 
 	if let Some(methods) = data.methods {
-		print_vec(methods, "Methods", true, compact);
+		print_iter(methods, "Methods", true, compact);
 	}
 
 	if let Some(events) = data.events {
-		print_vec(events, "Events", true, compact);
+		print_iter(events, "Events", true, compact);
 	}
 
 	if let Some(r#type) = data.r#type {
@@ -26,10 +29,9 @@ pub fn print_element(data: ElementData, url: &str, compact: bool) {
 	if let Some(params) = data.params {
 		let params = params
 			.iter()
-			.map(|e| format!("{} ({}): {}", e.name, e.r#type, e.description))
-			.collect();
+			.map(|e| format!("{} ({}): {}", e.name, e.r#type, e.description));
 
-		print_vec(params, "Parameters", false, compact);
+		print_iter(params, "Parameters", false, compact);
 	}
 
 	if let Some(returns) = data.returns {
@@ -40,17 +42,17 @@ pub fn print_element(data: ElementData, url: &str, compact: bool) {
 }
 
 pub fn print_list(data: ListData, compact: bool) {
-	let classes = data.classes.into_iter().map(|e| e.name).collect();
-	let interfaces = data.interfaces.into_iter().map(|e| e.name).collect();
-	let typedefs = data.typedefs.into_iter().map(|e| e.name).collect();
+	let classes = data.classes.into_iter().map(|e| e.name);
+	print_iter(classes, "Classes", true, compact);
 
-	print_vec(classes, "Classes", true, compact);
-	print_vec(interfaces, "Interfaces", true, compact);
-	print_vec(typedefs, "Typedefs", true, compact);
+	if let Some(typedefs) = data.typedefs {
+		let typedefs = typedefs.into_iter().map(|e| e.name);
+		print_iter(typedefs, "Typedefs", true, compact);
+	}
 }
 
-fn print_vec(mut vec: Vec<String>, name: &str, sort: bool, compact: bool) {
-	vec = vec.into_iter().filter(|e| !e.starts_with('_')).collect();
+fn print_iter(iter: impl IntoIterator<Item = String>, name: &str, sort: bool, compact: bool) {
+	let mut vec: Vec<_> = iter.into_iter().filter(|e| !e.starts_with('_')).collect();
 
 	if sort {
 		vec.sort();

@@ -15,8 +15,8 @@ pub struct ReturnData {
 #[derive(Deserialize)]
 pub struct ElementData {
 	pub name: String,
-	pub description: String,
 	pub internal_type: String,
+	pub description: Option<String>,
 	pub parent: Option<String>,
 	pub props: Option<Vec<String>>,
 	pub methods: Option<Vec<String>>,
@@ -34,8 +34,7 @@ pub struct ListElementData {
 #[derive(Deserialize)]
 pub struct ListData {
 	pub classes: Vec<ListElementData>,
-	pub interfaces: Vec<ListElementData>,
-	pub typedefs: Vec<ListElementData>,
+	pub typedefs: Option<Vec<ListElementData>>,
 }
 
 #[derive(Deserialize)]

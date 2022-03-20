@@ -1,63 +1,52 @@
-use crate::data::{ElementData, ListData};
+use crate::data::{APIData, Element};
+use crate::url::ElementType;
 use crate::util;
 
-pub fn print_element(data: ElementData, url: &str, compact: bool) {
-	let parent = data.parent.map_or(String::new(), |x| x + ".");
+pub fn print_data(data: APIData, url: &str) {
+	let classes = data.classes.into_iter().map(list_element);
+	let typedefs = data.typedefs.into_iter().map(list_element);
 
-	println!("\n{}{} ({})", parent, data.name, data.internal_type);
+	print_iter(classes, "Classes", true);
+	print_iter(typedefs, "Typedefs", true);
 
-	if let Some(description) = data.description {
-		println!("\n{}", util::clean_description(&description));
+	println!("\n -> View full docs: [{}]\n", url);
+}
+
+pub fn print_element(element: Element, url: &str, element_type: ElementType) {
+	println!("\n{} ({})", element.name, element_type.as_str());
+
+	if let Some(description) = element.description {
+		println!("\n{}", util::clean_description(description, false));
 	}
 
-	if let Some(props) = data.props {
-		print_iter(props, "Properties", true, compact);
+	if let Some(props) = element.props {
+		print_iter(props.into_iter().map(list_element), "Properties", true);
 	}
 
-	if let Some(methods) = data.methods {
-		print_iter(methods, "Methods", true, compact);
+	if let Some(methods) = element.methods {
+		print_iter(methods.into_iter().map(list_element), "Methods", true);
 	}
 
-	if let Some(events) = data.events {
-		print_iter(events, "Events", true, compact);
-	}
-
-	if let Some(r#type) = data.r#type {
-		println!("\nType:\n{}", r#type);
-	}
-
-	if let Some(params) = data.params {
-		let params = params
-			.iter()
-			.map(|e| format!("{} ({}): {}", e.name, e.r#type, e.description));
-
-		print_iter(params, "Parameters", false, compact);
-	}
-
-	if let Some(returns) = data.returns {
-		println!("\nReturns:\n{}", returns.r#type);
+	if let Some(events) = element.events {
+		print_iter(events.into_iter().map(list_element), "Events", true);
 	}
 
 	println!("\n -> View full docs: [{}]\n", url);
 }
 
-pub fn print_list(data: ListData, compact: bool) {
-	let classes = data.classes.into_iter().map(|e| e.name);
-	print_iter(classes, "Classes", true, compact);
-
-	if let Some(typedefs) = data.typedefs {
-		let typedefs = typedefs.into_iter().map(|e| e.name);
-		print_iter(typedefs, "Typedefs", true, compact);
+fn list_element(element: Element) -> String {
+	match element.description {
+		Some(description) => element.name + ": " + &util::clean_description(description, true),
+		None => element.name,
 	}
 }
 
-fn print_iter(iter: impl IntoIterator<Item = String>, name: &str, sort: bool, compact: bool) {
-	let mut vec: Vec<_> = iter.into_iter().filter(|e| !e.starts_with('_')).collect();
+fn print_iter(iter: impl Iterator<Item = String>, name: &str, sort: bool) {
+	let mut vec: Vec<_> = iter.filter(|e| !e.starts_with('_')).collect();
 
 	if sort {
 		vec.sort();
 	}
 
-	print!("\n{}:\n{}", name, if compact { "" } else { "  - " });
-	println!("{}", vec.join(if compact { ", " } else { "\n  - " }));
+	println!("\n{}:\n  - {}", name, vec.join("\n  - "));
 }

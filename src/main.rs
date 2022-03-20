@@ -4,32 +4,44 @@ mod output;
 mod url;
 mod util;
 
-use data::APIResponse;
 use reqwest::blocking as reqwest;
+use url::ElementType;
 
 fn main() {
-	let args = args::parse_args();
+	let args = args::parse();
 
-	let query = args.positionals.join(".").replace('#', ".");
-	let source = args.options.get("src").map_or("stable", |e| e);
-
-	let compact = args.options.contains_key("compact") || args.flags.contains(&'c');
-	let force = args.options.contains_key("force") || args.flags.contains(&'f');
+	let source = args.options.get("src").map_or("discord.js", String::as_str);
+	let tag = args.options.get("tag").map_or("stable", String::as_str);
 
 	let url = format!(
-		"https://djsdocs.sorta.moe/v2?src={}&force={}&q={}",
-		source, force, query,
+		"https://raw.githubusercontent.com/discordjs/docs/main/{}/{}.json",
+		source, tag,
 	);
 
 	let response = util::unwrap(reqwest::get(url));
-	let parsed = util::unwrap(response.json::<APIResponse>());
 
-	match parsed {
-		APIResponse::Element(data) => {
-			let url = util::unwrap(url::parse_url(&data, source));
-			output::print_element(data, &url, compact);
-		}
-		APIResponse::List(data) => output::print_list(data, compact),
-		APIResponse::Error(error) => util::exit(error.message),
+	if !response.status().is_success() {
+		util::exit(format!("invalid source or tag: {}/{}", source, tag));
 	}
+
+	let data = util::unwrap(response.json());
+
+	if args.positionals.is_empty() {
+		let url = url::project(source, tag);
+		return output::print_data(data, &url);
+	}
+
+	let query = args.positionals[0].to_lowercase();
+
+	if let Some(element) = data.classes.into_iter().find(|e| e.name.to_lowercase() == query) {
+		let url = url::element(source, tag, &element.name, ElementType::Class);
+		return output::print_element(element, &url, ElementType::Class);
+	}
+
+	if let Some(element) = data.typedefs.into_iter().find(|e| e.name.to_lowercase() == query) {
+		let url = url::element(source, tag, &element.name, ElementType::Typedef);
+		return output::print_element(element, &url, ElementType::Typedef);
+	}
+
+	util::exit(format!("invalid query: {}", query));
 }

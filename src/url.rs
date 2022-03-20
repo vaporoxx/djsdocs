@@ -1,47 +1,25 @@
-use crate::data::ElementData;
-use std::fmt::Display;
-
-pub enum URLError {
-	UnknownElementType,
-	UnknownSource,
+pub enum ElementType {
+	Class,
+	Typedef,
 }
 
-impl Display for URLError {
-	fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-		let error = match self {
-			URLError::UnknownElementType => "unknown element type",
-			URLError::UnknownSource => "unknown source",
-		};
-
-		write!(f, "encountered {} while parsing the url", error)
+impl ElementType {
+	pub fn as_str(&self) -> &str {
+		match self {
+			ElementType::Class => "class",
+			ElementType::Typedef => "typedef",
+		}
 	}
 }
 
-fn base_url(source: &str) -> Option<&'static str> {
-	match source {
-		"stable" => Some("https://discord.js.org/#/docs/discord.js/stable"),
-		"main" => Some("https://discord.js.org/#/docs/discord.js/main"),
-		"collection" => Some("https://discord.js.org/#/docs/collection/main"),
-		"builders" => Some("https://discord.js.org/#/docs/builders/main"),
-		"voice" => Some("https://discord.js.org/#/docs/voice/main"),
-		"rest" => Some("https://discord.js.org/#/docs/rest/main"),
-		"commando" => Some("https://discord.js.org/#/docs/commando/master"),
-		"rpc" => Some("https://discord.js.org/#/docs/rpc/master"),
-		"akairo" => Some("https://discord-akairo.github.io/#/docs/main/master"),
-		_ => None,
-	}
+fn base(source: &str, tag: &str) -> String {
+	format!("https://discord.js.org/#/docs/{}/{}", source, tag)
 }
 
-pub fn parse_url(data: &ElementData, source: &str) -> Result<String, URLError> {
-	let base = base_url(source).ok_or(URLError::UnknownSource)?;
+pub fn project(source: &str, tag: &str) -> String {
+	base(source, tag) + "/general/welcome"
+}
 
-	let parent = data.parent.as_ref();
-
-	match data.internal_type.as_str() {
-		"class" => Ok(format!("{}/class/{}", base, data.name)),
-		"typedef" => Ok(format!("{}/typedef/{}", base, data.name)),
-		"prop" | "method" => Ok(format!("{}/class/{}?scrollTo={}", base, parent.unwrap(), data.name)),
-		"event" => Ok(format!("{}/class/{}?scrollTo=e-{}", base, parent.unwrap(), data.name)),
-		_ => Err(URLError::UnknownElementType),
-	}
+pub fn element(source: &str, tag: &str, name: &str, element_type: ElementType) -> String {
+	base(source, tag) + "/" + element_type.as_str() + "/" + name
 }

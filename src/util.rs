@@ -1,20 +1,20 @@
-use regex::Regex;
+use regex::{Regex, RegexBuilder};
 use std::fmt::Display;
 use std::process;
 
-pub fn clean_description(input: &str) -> String {
-	let newlines = input.replace('\n', " ");
+fn regex(pattern: &str) -> Regex {
+	RegexBuilder::new(pattern).dot_matches_new_line(true).build().unwrap()
+}
 
-	let info = Regex::new("<info>(.*?)</info>")
-		.unwrap()
-		.replace_all(&newlines, "Info: $1");
+pub fn clean_description(mut input: String, trim: bool) -> String {
+	if trim && input.lines().count() > 1 {
+		input = format!("{} [...]", input.lines().next().unwrap());
+	}
 
-	let warn = Regex::new("<warn>(.*?)</warn>")
-		.unwrap()
-		.replace_all(&info, "Warning: $1");
+	let info = regex("<info>(.*?)</info>").replace_all(&input, "Info: $1");
+	let warn = regex("<warn>(.*?)</warn>").replace_all(&info, "Warning: $1");
 
-	Regex::new(r"`(.*?)`|\{@link (.*?)\}|<p>(.*?)</p>")
-		.unwrap()
+	regex(r"`(.*?)`|\{@link (.*?)\}|<p>(.*?)</p>")
 		.replace_all(&warn, "$1$2$3")
 		.into_owned()
 }

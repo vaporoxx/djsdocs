@@ -13,8 +13,8 @@ A command line utility to access the discord.js documentation.
 djsdocs [query] [--src=source] [--tag=tag]
 ```
 
-| Parameter | Default      | Description                                                      |
-|:---------:|:------------:|------------------------------------------------------------------|
-| query     | /            | The search query. If empty, all elements get listed              |
-| src       | `discord.js` | One of `builders`, `collection`, `discord.js`, `rest` or `voice` |
-| tag       | `stable`     | One of `main`, `stable` or a specific version tag                |
+| Parameter | Default      | Description                                                               |
+|:---------:|:------------:|---------------------------------------------------------------------------|
+| query     | /            | The search query. If empty, all elements get listed                       |
+| src       | `discord.js` | One of `builders`, `collection`, `discord.js`, `proxy`, `rest` or `voice` |
+| tag       | `main`       | One of `main`, `stable` or a specific version tag                         |

@@ -11,7 +11,7 @@ fn main() {
 	let args = args::parse();
 
 	let source = args.options.get("src").map_or("discord.js", String::as_str);
-	let tag = args.options.get("tag").map_or("stable", String::as_str);
+	let tag = args.options.get("tag").map_or("main", String::as_str);
 
 	let url = format!(
 		"https://raw.githubusercontent.com/discordjs/docs/main/{}/{}.json",

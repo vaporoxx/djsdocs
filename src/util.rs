@@ -1,6 +1,7 @@
-use regex::{Regex, RegexBuilder};
 use std::fmt::Display;
 use std::process;
+
+use regex::{Regex, RegexBuilder};
 
 fn regex(pattern: &str) -> Regex {
 	RegexBuilder::new(pattern).dot_matches_new_line(true).build().unwrap()

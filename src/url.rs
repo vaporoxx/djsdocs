@@ -1,4 +1,5 @@
 pub enum ElementType {
+	Function,
 	Class,
 	Typedef,
 }
@@ -6,6 +7,7 @@ pub enum ElementType {
 impl ElementType {
 	pub fn as_str(&self) -> &str {
 		match self {
+			ElementType::Function => "function",
 			ElementType::Class => "class",
 			ElementType::Typedef => "typedef",
 		}

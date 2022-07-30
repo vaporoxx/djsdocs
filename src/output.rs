@@ -3,11 +3,20 @@ use crate::url::ElementType;
 use crate::util;
 
 pub fn print_data(data: APIData, url: &str) {
-	let classes = data.classes.into_iter().map(list_element);
-	let typedefs = data.typedefs.into_iter().map(list_element);
+	if let Some(functions) = data.functions {
+		let functions = functions.into_iter().map(list_element);
+		print_iter(functions, "Functions", true);
+	}
 
-	print_iter(classes, "Classes", true);
-	print_iter(typedefs, "Typedefs", true);
+	if let Some(classes) = data.classes {
+		let classes = classes.into_iter().map(list_element);
+		print_iter(classes, "Classes", true);
+	}
+
+	if let Some(typedefs) = data.typedefs {
+		let typedefs = typedefs.into_iter().map(list_element);
+		print_iter(typedefs, "Typedefs", true);
+	}
 
 	println!("\n -> View full docs: [{}]\n", url);
 }

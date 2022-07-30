@@ -2,8 +2,9 @@ use serde::Deserialize;
 
 #[derive(Deserialize)]
 pub struct APIData {
-	pub classes: Vec<Element>,
-	pub typedefs: Vec<Element>,
+	pub functions: Option<Vec<Element>>,
+	pub classes: Option<Vec<Element>>,
+	pub typedefs: Option<Vec<Element>>,
 }
 
 #[derive(Deserialize)]

@@ -1,10 +1,10 @@
 [package]
 name = "djsdocs"
 version = "0.1.0"
-authors = ["Vaporox"]
+authors = ["vaporoxx"]
 edition = "2021"
 description = "Access discord.js docs from a terminal"
-repository = "https://github.com/vaporox/djsdocs"
+repository = "https://github.com/vaporoxx/djsdocs"
 license = "ISC"
 
 [dependencies]
